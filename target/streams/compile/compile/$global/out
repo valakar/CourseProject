@@ -1,0 +1,6 @@
+[info] Compiling 2 Java sources to D:\Java\play\Course_Project\target\scala-2.10\classes...
+[warn] Note: D:\Java\play\Course_Project\app\models\User.java uses unchecked or unsafe operations.
+[warn] Note: Recompile with -Xlint:unchecked for details.
+[info] Compiling 11 Scala sources and 10 Java sources to D:\Java\play\Course_Project\target\scala-2.10\classes...
+[warn] Note: Some input files use unchecked or unsafe operations.
+[warn] Note: Recompile with -Xlint:unchecked for details.

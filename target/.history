@@ -1,0 +1,13 @@
+run
+clean-all
+clean
+run
+clean
+run
+clean
+run
+debug run
+debug
+play debug
+console
+play debug run
