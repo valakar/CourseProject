@@ -139,7 +139,6 @@ tasks:
     
     - !!models.Task
         title:      Fix the documentation
-        done:       false
         folder:     Todo
         project:    !!models.Project
                         id: 1
@@ -148,7 +147,6 @@ tasks:
                         
     - !!models.Task
         title:      Prepare the beta release
-        done:       false
         folder:     Urgent
         dueDate:    2011-11-15
         project:    !!models.Project
@@ -158,14 +156,12 @@ tasks:
 
     - !!models.Task
         title:      Buy some milk
-        done:       false
         folder:     Todo
         project:    !!models.Project
                         id: 9
 
     - !!models.Task
         title:      Check 1.2.4-RC2
-        done:       false
         folder:     Todo
         dueDate:    2011-11-18
         project:    !!models.Project
@@ -175,7 +171,6 @@ tasks:
                         
     - !!models.Task
         title:      Finish zentask integration
-        done:       true
         folder:     Todo
         dueDate:    2011-11-15
         project:    !!models.Project
@@ -185,7 +180,6 @@ tasks:
                         
     - !!models.Task
         title:      Release the secret project
-        done:       false
         folder:     Todo
         dueDate:    2012-01-01
         project:    !!models.Project

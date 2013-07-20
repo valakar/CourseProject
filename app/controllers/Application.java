@@ -75,17 +75,8 @@ public class Application extends Controller {
                 controllers.routes.javascript.Projects.deleteGroup(), 
                 controllers.routes.javascript.Projects.renameGroup(),
                 controllers.routes.javascript.Projects.addUser(), 
-                controllers.routes.javascript.Projects.removeUser(), 
-                
-                // Routes for Tasks
-                controllers.routes.javascript.Tasks.addFolder(), 
-                controllers.routes.javascript.Tasks.renameFolder(), 
-                controllers.routes.javascript.Tasks.deleteFolder(), 
-                controllers.routes.javascript.Tasks.index(),
-                controllers.routes.javascript.Tasks.add(), 
-                controllers.routes.javascript.Tasks.update(), 
-                controllers.routes.javascript.Tasks.delete()
-                
+                controllers.routes.javascript.Projects.removeUser()
+
             )
         );
     }

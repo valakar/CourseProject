@@ -4,7 +4,7 @@
 		module="make_a_note_2.10"
 		revision="1.0"
 		status="integration"
-		publication="20130713012713"
+		publication="20130720192840"
 	>
 		<description>
 		Make_a_Note
@@ -37,6 +37,7 @@
 		<dependency org="play" name="play-java_2.10" rev="2.1.1" conf="compile->default(compile)"/>
 		<dependency org="play" name="play-java-jdbc_2.10" rev="2.1.1" conf="compile->default(compile)"/>
 		<dependency org="play" name="play-java-ebean_2.10" rev="2.1.1" conf="compile->default(compile)"/>
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.18" conf="compile->default(compile)"/>
 		<exclude org="org.scala-lang" module="scala-library" artifact="*" type="jar" ext="*" matcher="exact"/>
 		<exclude org="org.scala-lang" module="scala-compiler" artifact="*" type="jar" ext="*" matcher="exact"/>
 		<override org="org.scala-lang" module="scala-library" matcher="exact" rev="2.10.0"/>

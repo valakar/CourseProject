@@ -35,7 +35,7 @@ Seq[Any](format.raw/*1.42*/("""
     <dl class="options">
         <dt>Options</dt>
         <dd>
-            <button class="newProject">New project</button>
+            <button class="newProject">New group</button>
             <button class="deleteGroup">Remove group</button>
         </dd>
     </dl>
@@ -57,10 +57,10 @@ Seq[Any](format.raw/*1.42*/("""
 }
                 /*
                     -- GENERATED --
-                    DATE: Sat Jul 13 01:27:50 EEST 2013
+                    DATE: Sat Jul 20 19:28:41 EEST 2013
                     SOURCE: D:/Java/play/Course_Project/app/views/projects/group.scala.html
-                    HASH: 6bf42242f53aac586889bd96cb752bd7305cfa52
-                    MATRIX: 746->1|863->41|917->60|943->65|1041->128|1067->133|1376->406|1393->414|1406->418|1457->431|1507->445|1521->450|1571->478|1613->488
+                    HASH: fc3c5d627d448da1fbba36a4c39fceb4f4a8f668
+                    MATRIX: 746->1|863->41|917->60|943->65|1041->128|1067->133|1374->404|1391->412|1404->416|1455->429|1505->443|1519->448|1569->476|1611->486
                     LINES: 26->1|29->1|31->3|31->3|33->5|33->5|43->15|43->15|43->15|43->15|44->16|44->16|44->16|45->17
                     -- GENERATED --
                 */

@@ -1,4 +1,3 @@
-# -----------------------------------------------
 # MAIN
 # -----------------------------------------------
 # DISCLAMER :
@@ -195,22 +194,22 @@ class Project extends Backbone.View
 # ---------------------------------------- ROUTER
 class AppRouter extends Backbone.Router
     initialize: ->
-        @currentApp = new Tasks
+        @currentApp = new Notes
             el: $("#main")
     routes:
         "/"                          : "index"
-        "/projects/:project/tasks"   : "tasks"
+        "/projects/:project/notes"   : "notes"
     index: ->
         # show dashboard
         $("#main").load "/ #main"
-    tasks: (project) ->
+    notes: (project) ->
         # load project || display app
         currentApp = @currentApp
-        $("#main").load "/projects/" + project + "/tasks", (tpl) ->
+        $("#main").load "/projects/" + project + "/notes", (tpl) ->
             currentApp.render(project)
 
 # ----------------------------------------- TASKS
-class Tasks extends Backbone.View
+class Notes extends Backbone.View
     events:
         "click .newFolder"              : "newFolder"
         "click .list .action"           : "removeUser"
@@ -219,15 +218,15 @@ class Tasks extends Backbone.View
         @project = project
         # HTML is our model
         @folders = $.map $(".folder", @el), (folder) =>
-            new TaskFolder
+            new NoteFolder
                 el: $(folder)
                 project: @project
     newFolder: (e) ->
         e.preventDefault()
-        jsRoutes.controllers.Tasks.addFolder(@project).ajax
+        jsRoutes.controllers.Notes.addFolder(@project).ajax
             context: this
             success: (tpl) ->
-                newFolder = new TaskFolder
+                newFolder = new NoteFolder
                     el: $(tpl).insertBefore(".newFolder")
                     project: @project
                 newFolder.el.find("header > h3").editInPlace("edit")
@@ -258,53 +257,53 @@ class Tasks extends Backbone.View
         false
 
 # ---------------------------------- TASKS FOLDER
-class TaskFolder extends Backbone.View
+class NoteFolder extends Backbone.View
     events:
-        "click .deleteCompleteTasks"    : "deleteCompleteTasks"
-        "click .deleteAllTasks"         : "deleteAllTasks"
+        "click .deleteCompleteNotes"    : "deleteCompleteNotes"
+        "click .deleteAllNotes"         : "deleteAllNotes"
         "click .deleteFolder"           : "deleteFolder"
         "change header>input"           : "toggleAll"
-        "submit .addTask"               : "newTask"
+        "submit .addNote"               : "newNote"
     initialize: (options) =>
         @project = options.project
-        @tasks = $.map $(".list li",@el), (item)=>
-            newTask = new TaskItem
+        @notes = $.map $(".list li",@el), (item)=>
+            newNote = new NoteItem
                 el: $(item)
                 folder: @
-            newTask.bind("change", @refreshCount)
-            newTask.bind("delete", @deleteTask)
+            newNote.bind("change", @refreshCount)
+            newNote.bind("delete", @deleteNote)
         @counter = @el.find(".counter")
         @id = @el.attr("data-folder-id")
         @name = $("header > h3", @el).editInPlace
             context: this
             onChange: @renameFolder
         @refreshCount()
-    newTask: (e) =>
+    newNote: (e) =>
         e.preventDefault()
         $(document).focus() # temporary disable form
         form = $(e.target)
-        taskBody = $("input[name=taskBody]", form).val()
+        noteBody = $("input[name=noteBody]", form).val()
         url = form.attr("action")
-        jsRoutes.controllers.Tasks.add(@project, @id).ajax
+        jsRoutes.controllers.Notes.add(@project, @id).ajax
             url: url
             type: "POST"
             context: this
             data:
-                title: $("input[name=taskBody]", form).val()
+                title: $("input[name=noteBody]", form).val()
                 dueDate: $("input[name=dueDate]", form).val()
                 assignedTo: 
                     email: $("input[name=assignedTo]", form).val()
             success: (tpl) ->
-                newTask = new TaskItem(el: $(tpl), folder: @)
-                @el.find("ul").append(newTask.el)
-                @tasks.push(newTask)
+                newNote = new NoteItem(el: $(tpl), folder: @)
+                @el.find("ul").append(newNote.el)
+                @notes.push(newNote)
                 form.find("input[type=text]").val("").first().focus()
             error: (err) ->
                 alert "Something went wrong:" + err
         false
     renameFolder: (name) =>
         @loading(true)
-        jsRoutes.controllers.Tasks.renameFolder(@project, @id).ajax
+        jsRoutes.controllers.Notes.renameFolder(@project, @id).ajax
             context: this
             data:
                 name: name
@@ -316,16 +315,16 @@ class TaskFolder extends Backbone.View
             error: (err) ->
                 @loading(false)
                 $.error("Error: " + err)
-    deleteCompleteTasks: (e) =>
+    deleteCompleteNotes: (e) =>
         e.preventDefault()
-        $.each @tasks, (i, item) ->
-            item.deleteTask() if item.el.find(".done:checked").length > 0
+        $.each @notes, (i, item) ->
+            item.deleteNote() if item.el.find(".done:checked").length > 0
             true
         false
-    deleteAllTasks: (e) =>
+    deleteAllNotes: (e) =>
         e.preventDefault()
-        $.each @tasks, (i, item)->
-            item.deleteTask()
+        $.each @notes, (i, item)->
+            item.deleteNote()
             true
         false
     deleteFolder: (e) =>
@@ -334,16 +333,16 @@ class TaskFolder extends Backbone.View
         false
     toggleAll: (e) =>
         val = $(e.target).is(":checked")
-        $.each @tasks, (i, item) ->
+        $.each @notes, (i, item) ->
             item.toggle(val)
             true
     refreshCount: =>
-        count = @tasks.filter((item)->
+        count = @notes.filter((item)->
             item.el.find(".done:checked").length == 0
         ).length
         @counter.text(count)
-    deleteTask: (task) =>
-        @tasks = _.without @tasks, tasks
+    deleteNote: (note) =>
+        @notes = _.without @notes, notes
         @refreshCount()
     loading: (display) ->
         if (display)
@@ -354,19 +353,19 @@ class TaskFolder extends Backbone.View
             @el.find("header .loader").hide()
 
 # ------------------------------------- TASK ITEM
-class TaskItem extends Backbone.View
+class NoteItem extends Backbone.View
     events:
         "change .done"          : "onToggle"
-        "click .deleteTask"     : "deleteTask"
-        "dblclick h4"           : "editTask"
+        "click .deleteNote"     : "deleteNote"
+        "dblclick h4"           : "editNote"
     initialize: (options) ->
         @check = @el.find(".done")
-        @id = @el.attr("data-task-id")
+        @id = @el.attr("data-note-id")
         @folder = options.folder
-    deleteTask: (e) =>
+    deleteNote: (e) =>
         e.preventDefault() if e?
         @loading(false)
-        jsRoutes.controllers.Tasks.delete(@id).ajax
+        jsRoutes.controllers.Notes.delete(@id).ajax
             context: this
             data:
                 name: name
@@ -378,14 +377,14 @@ class TaskItem extends Backbone.View
                 @loading(false)
                 $.error("Error: " + err)
         false
-    editTask: (e) =>
+    editNote: (e) =>
         e.preventDefault()
         # TODO
         alert "not implemented yet."
         false
     toggle: (val) =>
         @loading(true)
-        jsRoutes.controllers.Tasks.update(@id).ajax
+        jsRoutes.controllers.Notes.update(@id).ajax
             context: this
             data:
                 done: val

@@ -58,6 +58,7 @@ public class User extends Model {
      * Authenticate a User.
      */
     public static User authenticate(String email, String password) {
+    	password = Crypto.encryptAES(password, "soldlyaparolya12");
         return find.where()
             .eq("email", email)
             .eq("password", password)

@@ -20,69 +20,73 @@ import play.api.data.Field
 import play.mvc.Http.Context.Implicit._
 import views.html._
 /**/
-object index extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template2[Project,List[Task],play.api.templates.Html] {
+object index extends BaseScalaTemplate[play.api.templates.Html,Format[play.api.templates.Html]](play.api.templates.HtmlFormat) with play.api.templates.Template1[Project,play.api.templates.Html] {
 
     /**/
-    def apply/*1.2*/(project: Project, tasks: List[Task]):play.api.templates.Html = {
+    def apply/*1.2*/(project: Project):play.api.templates.Html = {
         _display_ {
 
-Seq[Any](format.raw/*1.39*/("""
-
+Seq[Any](format.raw/*1.20*/("""
 <header>
+
     <hgroup>
         <h1>"""),_display_(Seq[Any](/*5.14*/project/*5.21*/.folder)),format.raw/*5.28*/("""</h1>
         <h2>"""),_display_(Seq[Any](/*6.14*/project/*6.21*/.name)),format.raw/*6.26*/("""</h2>
     </hgroup>
-    <dl class="users">
+	
+	<dl class="users">	
+		<!-- New note -->
         <dt>Project's team</dt>
         <dd>
             <div class="wrap">
                 <h3>Team mates</h3>
                 <div class="list">
-                    """),_display_(Seq[Any](/*14.22*/project/*14.29*/.members.map/*14.41*/ { user =>_display_(Seq[Any](format.raw/*14.51*/("""
-                        <dl data-user-id=""""),_display_(Seq[Any](/*15.44*/user/*15.48*/.email)),format.raw/*15.54*/("""">
-                            <dt>"""),_display_(Seq[Any](/*16.34*/user/*16.38*/.name)),format.raw/*16.43*/(""" <span>("""),_display_(Seq[Any](/*16.52*/user/*16.56*/.email)),format.raw/*16.62*/(""")</span></dt>
+                    """),_display_(Seq[Any](/*16.22*/project/*16.29*/.members.map/*16.41*/ { user =>_display_(Seq[Any](format.raw/*16.51*/("""
+                        <dl data-user-id=""""),_display_(Seq[Any](/*17.44*/user/*17.48*/.email)),format.raw/*17.54*/("""">
+                            <dt>"""),_display_(Seq[Any](/*18.34*/user/*18.38*/.name)),format.raw/*18.43*/(""" <span>("""),_display_(Seq[Any](/*18.52*/user/*18.56*/.email)),format.raw/*18.62*/(""")</span></dt>
                             <dd class="action">Action</dd>
                         </dl>
-                    """)))})),format.raw/*19.22*/("""
+                    """)))})),format.raw/*21.22*/("""
                 </div>
                 <h3>Add a team mate</h3>
                 <div class="addUserList">
-                    """),_display_(Seq[Any](/*23.22*/User/*23.26*/.findAll.diff(project.members).map/*23.60*/ { user =>_display_(Seq[Any](format.raw/*23.70*/("""
-                        <dl data-user-id=""""),_display_(Seq[Any](/*24.44*/user/*24.48*/.email)),format.raw/*24.54*/("""">
-                            <dt>"""),_display_(Seq[Any](/*25.34*/user/*25.38*/.name)),format.raw/*25.43*/(""" <span>("""),_display_(Seq[Any](/*25.52*/user/*25.56*/.email)),format.raw/*25.62*/(""")</span></dt>
+                    """),_display_(Seq[Any](/*25.22*/User/*25.26*/.findAll.diff(project.members).map/*25.60*/ { user =>_display_(Seq[Any](format.raw/*25.70*/("""
+                        <dl data-user-id=""""),_display_(Seq[Any](/*26.44*/user/*26.48*/.email)),format.raw/*26.54*/("""">
+                            <dt>"""),_display_(Seq[Any](/*27.34*/user/*27.38*/.name)),format.raw/*27.43*/(""" <span>("""),_display_(Seq[Any](/*27.52*/user/*27.56*/.email)),format.raw/*27.62*/(""")</span></dt>
                             <dd class="action">Action</dd>
                         </dl>
-                    """)))})),format.raw/*28.22*/("""
+                    """)))})),format.raw/*30.22*/("""
                 </div>
             </div>
         </dd>
-    </dl>
+		
+	</dl>
 </header>
 <article  class="tasks" id="tasks">
-    """),_display_(Seq[Any](/*35.6*/tasks/*35.11*/.groupBy(_.folder).map/*35.33*/ {/*36.9*/case (folder, tasks) =>/*36.32*/ {_display_(Seq[Any](format.raw/*36.34*/("""
-            """),_display_(Seq[Any](/*37.14*/views/*37.19*/.html.tasks.folder(folder, tasks))),format.raw/*37.52*/("""
-        """)))}})),format.raw/*39.6*/("""
-    <a href="#newFolder" class="new newFolder">New folder</a>
+	<!--
+	<dl class="users"><a href="#newFolder" class="new newFolder" style="line-height:19px;">New note</a></dl>
+    -->
+	<dl class="users"><a href=""""),_display_(Seq[Any](/*41.30*/routes/*41.36*/.Notes.add(project.id))),format.raw/*41.58*/("""" class="new newFolder" style="line-height:19px;">New note</a></dl>
+    
 </article>
 
 """))}
     }
     
-    def render(project:Project,tasks:List[Task]): play.api.templates.Html = apply(project,tasks)
+    def render(project:Project): play.api.templates.Html = apply(project)
     
-    def f:((Project,List[Task]) => play.api.templates.Html) = (project,tasks) => apply(project,tasks)
+    def f:((Project) => play.api.templates.Html) = (project) => apply(project)
     
     def ref: this.type = this
 
 }
                 /*
                     -- GENERATED --
-                    DATE: Sat Jul 13 01:27:50 EEST 2013
+                    DATE: Sat Jul 20 20:19:51 EEST 2013
                     SOURCE: D:/Java/play/Course_Project/app/views/tasks/index.scala.html
-                    HASH: ca5808423196986435a6a73d1b2cd9998b7c7393
-                    MATRIX: 741->1|855->38|927->75|942->82|970->89|1024->108|1039->115|1065->120|1312->331|1328->338|1349->350|1397->360|1477->404|1490->408|1518->414|1590->450|1603->454|1630->459|1675->468|1688->472|1716->478|1872->602|2036->730|2049->734|2092->768|2140->778|2220->822|2233->826|2261->832|2333->868|2346->872|2373->877|2418->886|2431->890|2459->896|2615->1020|2768->1138|2782->1143|2813->1165|2823->1176|2855->1199|2895->1201|2945->1215|2959->1220|3014->1253|3056->1269
-                    LINES: 26->1|29->1|33->5|33->5|33->5|34->6|34->6|34->6|42->14|42->14|42->14|42->14|43->15|43->15|43->15|44->16|44->16|44->16|44->16|44->16|44->16|47->19|51->23|51->23|51->23|51->23|52->24|52->24|52->24|53->25|53->25|53->25|53->25|53->25|53->25|56->28|63->35|63->35|63->35|63->36|63->36|63->36|64->37|64->37|64->37|65->39
+                    HASH: 2975d95e057e631957acbdfda0452610640eef49
+                    MATRIX: 730->1|825->19|897->56|912->63|940->70|994->89|1009->96|1035->101|1302->332|1318->339|1339->351|1387->361|1467->405|1480->409|1508->415|1580->451|1593->455|1620->460|1665->469|1678->473|1706->479|1862->603|2026->731|2039->735|2082->769|2130->779|2210->823|2223->827|2251->833|2323->869|2336->873|2363->878|2408->887|2421->891|2449->897|2605->1021|2903->1283|2918->1289|2962->1311
+                    LINES: 26->1|29->1|33->5|33->5|33->5|34->6|34->6|34->6|44->16|44->16|44->16|44->16|45->17|45->17|45->17|46->18|46->18|46->18|46->18|46->18|46->18|49->21|53->25|53->25|53->25|53->25|54->26|54->26|54->26|55->27|55->27|55->27|55->27|55->27|55->27|58->30|69->41|69->41|69->41
                     -- GENERATED --
                 */
             

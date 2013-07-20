@@ -63,8 +63,11 @@ public class SignUp extends Controller {
         if(filledForm.hasErrors()) {
             return badRequest(form.render(filledForm));
         } else {
-        	filledForm.get().save();
-        	flash("success", "User " + filledForm.get().name + " has been created with pass: " + filledForm.get().password);
+    		
+        	User newUser = new User(filledForm.get().name, filledForm.get().email, Crypto.encryptAES(filledForm.get().password, "soldlyaparolya12"));
+        	newUser.save();        	
+//        	filledForm.get().save();
+        	flash("success", "User " + newUser.name + " has been created with pass: " + newUser.password);
             return ok(
             	login.render(form(Login.class))
             );

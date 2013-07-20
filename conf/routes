@@ -28,14 +28,11 @@ POST    /projects/:project/team             controllers.Projects.addUser(project
 DELETE  /projects/:project/team             controllers.Projects.removeUser(project: Long)
 
 # Tasks
-GET     /projects/:project/tasks            controllers.Tasks.index(project: Long)
-POST    /projects/:project/tasks            controllers.Tasks.add(project: Long, folder: String)
-PUT     /tasks/:task                        controllers.Tasks.update(task: Long)
-DELETE  /tasks/:task                        controllers.Tasks.delete(task: Long)
+GET     /projects/:project/notes            controllers.Notes.index(project: Long)
 
-POST    /tasks/folder                       controllers.Tasks.addFolder()
-DELETE  /projects/:project/tasks/folder     controllers.Tasks.deleteFolder(project: Long, folder: String)
-PUT     /project/:project/tasks/folder      controllers.Tasks.renameFolder(project: Long, folder: String)
+# Add note
+GET     /projects/:project/new              controllers.Notes.add(project: Long)
+# POST    /projects/:project/                 controllers.Notes.save(project: Long)
 
 # Javascript routing
 GET     /assets/javascripts/routes          controllers.Application.javascriptRoutes()

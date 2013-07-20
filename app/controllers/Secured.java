@@ -26,12 +26,6 @@ public class Secured extends Security.Authenticator {
             Context.current().request().username()
         );
     }
-    
-    public static boolean isOwnerOf(Long task) {
-        return Task.isOwner(
-            task,
-            Context.current().request().username()
-        );
-    }
+
     
 }

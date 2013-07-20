@@ -1,0 +1,18 @@
+@(project: Project, task: Task)
+<header>
+
+    <hgroup>
+        <h1>@project.folder</h1>
+        <h2>@project.name</h2>
+    </hgroup>
+</header>
+    
+<form class="addTask">
+    <input type="text" name="title" placeholder="Add title..." />
+    <input type="text" name="text" placeholder="New task..." />
+    <input type="text" name="dueDate" class="dueDate" placeholder="Due date: mm/dd/yy" />
+    <div class="assignedTo">
+        <input type="text" name="assignedTo" placeholder="Assign to..." />
+    </div>
+    <input type="submit" />
+</form>

@@ -1,5 +1,5 @@
 (function() {
-  var AppRouter, Drawer, Group, Project, TaskFolder, TaskItem, Tasks, log;
+  var AppRouter, Drawer, Group, NoteFolder, NoteItem, Notes, Project, log;
   var __slice = Array.prototype.slice, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
     for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
     function ctor() { this.constructor = child; }
@@ -263,52 +263,52 @@
       AppRouter.__super__.constructor.apply(this, arguments);
     }
     AppRouter.prototype.initialize = function() {
-      return this.currentApp = new Tasks({
+      return this.currentApp = new Notes({
         el: $("#main")
       });
     };
     AppRouter.prototype.routes = {
       "/": "index",
-      "/projects/:project/tasks": "tasks"
+      "/projects/:project/notes": "notes"
     };
     AppRouter.prototype.index = function() {
       return $("#main").load("/ #main");
     };
-    AppRouter.prototype.tasks = function(project) {
+    AppRouter.prototype.notes = function(project) {
       var currentApp;
       currentApp = this.currentApp;
-      return $("#main").load("/projects/" + project + "/tasks", function(tpl) {
+      return $("#main").load("/projects/" + project + "/notes", function(tpl) {
         return currentApp.render(project);
       });
     };
     return AppRouter;
   })();
-  Tasks = (function() {
-    __extends(Tasks, Backbone.View);
-    function Tasks() {
-      Tasks.__super__.constructor.apply(this, arguments);
+  Notes = (function() {
+    __extends(Notes, Backbone.View);
+    function Notes() {
+      Notes.__super__.constructor.apply(this, arguments);
     }
-    Tasks.prototype.events = {
+    Notes.prototype.events = {
       "click .newFolder": "newFolder",
       "click .list .action": "removeUser",
       "click .addUserList .action": "addUser"
     };
-    Tasks.prototype.render = function(project) {
+    Notes.prototype.render = function(project) {
       this.project = project;
       return this.folders = $.map($(".folder", this.el), __bind(function(folder) {
-        return new TaskFolder({
+        return new NoteFolder({
           el: $(folder),
           project: this.project
         });
       }, this));
     };
-    Tasks.prototype.newFolder = function(e) {
+    Notes.prototype.newFolder = function(e) {
       e.preventDefault();
-      jsRoutes.controllers.Tasks.addFolder(this.project).ajax({
+      jsRoutes.controllers.Notes.addFolder(this.project).ajax({
         context: this,
         success: function(tpl) {
           var newFolder;
-          newFolder = new TaskFolder({
+          newFolder = new NoteFolder({
             el: $(tpl).insertBefore(".newFolder"),
             project: this.project
           });
@@ -320,7 +320,7 @@
       });
       return false;
     };
-    Tasks.prototype.removeUser = function(e) {
+    Notes.prototype.removeUser = function(e) {
       e.preventDefault();
       jsRoutes.controllers.Projects.removeUser(this.project).ajax({
         context: this,
@@ -336,7 +336,7 @@
       });
       return false;
     };
-    Tasks.prototype.addUser = function(e) {
+    Notes.prototype.addUser = function(e) {
       e.preventDefault();
       jsRoutes.controllers.Projects.addUser(this.project).ajax({
         context: this,
@@ -352,39 +352,39 @@
       });
       return false;
     };
-    return Tasks;
+    return Notes;
   })();
-  TaskFolder = (function() {
-    __extends(TaskFolder, Backbone.View);
-    function TaskFolder() {
-      this.deleteTask = __bind(this.deleteTask, this);
+  NoteFolder = (function() {
+    __extends(NoteFolder, Backbone.View);
+    function NoteFolder() {
+      this.deleteNote = __bind(this.deleteNote, this);
       this.refreshCount = __bind(this.refreshCount, this);
       this.toggleAll = __bind(this.toggleAll, this);
       this.deleteFolder = __bind(this.deleteFolder, this);
-      this.deleteAllTasks = __bind(this.deleteAllTasks, this);
-      this.deleteCompleteTasks = __bind(this.deleteCompleteTasks, this);
+      this.deleteAllNotes = __bind(this.deleteAllNotes, this);
+      this.deleteCompleteNotes = __bind(this.deleteCompleteNotes, this);
       this.renameFolder = __bind(this.renameFolder, this);
-      this.newTask = __bind(this.newTask, this);
+      this.newNote = __bind(this.newNote, this);
       this.initialize = __bind(this.initialize, this);
-      TaskFolder.__super__.constructor.apply(this, arguments);
+      NoteFolder.__super__.constructor.apply(this, arguments);
     }
-    TaskFolder.prototype.events = {
-      "click .deleteCompleteTasks": "deleteCompleteTasks",
-      "click .deleteAllTasks": "deleteAllTasks",
+    NoteFolder.prototype.events = {
+      "click .deleteCompleteNotes": "deleteCompleteNotes",
+      "click .deleteAllNotes": "deleteAllNotes",
       "click .deleteFolder": "deleteFolder",
       "change header>input": "toggleAll",
-      "submit .addTask": "newTask"
+      "submit .addNote": "newNote"
     };
-    TaskFolder.prototype.initialize = function(options) {
+    NoteFolder.prototype.initialize = function(options) {
       this.project = options.project;
-      this.tasks = $.map($(".list li", this.el), __bind(function(item) {
-        var newTask;
-        newTask = new TaskItem({
+      this.notes = $.map($(".list li", this.el), __bind(function(item) {
+        var newNote;
+        newNote = new NoteItem({
           el: $(item),
           folder: this
         });
-        newTask.bind("change", this.refreshCount);
-        return newTask.bind("delete", this.deleteTask);
+        newNote.bind("change", this.refreshCount);
+        return newNote.bind("delete", this.deleteNote);
       }, this));
       this.counter = this.el.find(".counter");
       this.id = this.el.attr("data-folder-id");
@@ -394,32 +394,32 @@
       });
       return this.refreshCount();
     };
-    TaskFolder.prototype.newTask = function(e) {
-      var form, taskBody, url;
+    NoteFolder.prototype.newNote = function(e) {
+      var form, noteBody, url;
       e.preventDefault();
       $(document).focus();
       form = $(e.target);
-      taskBody = $("input[name=taskBody]", form).val();
+      noteBody = $("input[name=noteBody]", form).val();
       url = form.attr("action");
-      jsRoutes.controllers.Tasks.add(this.project, this.id).ajax({
+      jsRoutes.controllers.Notes.add(this.project, this.id).ajax({
         url: url,
         type: "POST",
         context: this,
         data: {
-          title: $("input[name=taskBody]", form).val(),
+          title: $("input[name=noteBody]", form).val(),
           dueDate: $("input[name=dueDate]", form).val(),
           assignedTo: {
             email: $("input[name=assignedTo]", form).val()
           }
         },
         success: function(tpl) {
-          var newTask;
-          newTask = new TaskItem({
+          var newNote;
+          newNote = new NoteItem({
             el: $(tpl),
             folder: this
           });
-          this.el.find("ul").append(newTask.el);
-          this.tasks.push(newTask);
+          this.el.find("ul").append(newNote.el);
+          this.notes.push(newNote);
           return form.find("input[type=text]").val("").first().focus();
         },
         error: function(err) {
@@ -428,9 +428,9 @@
       });
       return false;
     };
-    TaskFolder.prototype.renameFolder = function(name) {
+    NoteFolder.prototype.renameFolder = function(name) {
       this.loading(true);
-      return jsRoutes.controllers.Tasks.renameFolder(this.project, this.id).ajax({
+      return jsRoutes.controllers.Notes.renameFolder(this.project, this.id).ajax({
         context: this,
         data: {
           name: name
@@ -447,49 +447,49 @@
         }
       });
     };
-    TaskFolder.prototype.deleteCompleteTasks = function(e) {
+    NoteFolder.prototype.deleteCompleteNotes = function(e) {
       e.preventDefault();
-      $.each(this.tasks, function(i, item) {
+      $.each(this.notes, function(i, item) {
         if (item.el.find(".done:checked").length > 0) {
-          item.deleteTask();
+          item.deleteNote();
         }
         return true;
       });
       return false;
     };
-    TaskFolder.prototype.deleteAllTasks = function(e) {
+    NoteFolder.prototype.deleteAllNotes = function(e) {
       e.preventDefault();
-      $.each(this.tasks, function(i, item) {
-        item.deleteTask();
+      $.each(this.notes, function(i, item) {
+        item.deleteNote();
         return true;
       });
       return false;
     };
-    TaskFolder.prototype.deleteFolder = function(e) {
+    NoteFolder.prototype.deleteFolder = function(e) {
       e.preventDefault();
       this.el.remove();
       return false;
     };
-    TaskFolder.prototype.toggleAll = function(e) {
+    NoteFolder.prototype.toggleAll = function(e) {
       var val;
       val = $(e.target).is(":checked");
-      return $.each(this.tasks, function(i, item) {
+      return $.each(this.notes, function(i, item) {
         item.toggle(val);
         return true;
       });
     };
-    TaskFolder.prototype.refreshCount = function() {
+    NoteFolder.prototype.refreshCount = function() {
       var count;
-      count = this.tasks.filter(function(item) {
+      count = this.notes.filter(function(item) {
         return item.el.find(".done:checked").length === 0;
       }).length;
       return this.counter.text(count);
     };
-    TaskFolder.prototype.deleteTask = function(task) {
-      this.tasks = _.without(this.tasks, tasks);
+    NoteFolder.prototype.deleteNote = function(note) {
+      this.notes = _.without(this.notes, notes);
       return this.refreshCount();
     };
-    TaskFolder.prototype.loading = function(display) {
+    NoteFolder.prototype.loading = function(display) {
       if (display) {
         this.el.find("header .options").hide();
         return this.el.find("header .loader").show();
@@ -498,33 +498,33 @@
         return this.el.find("header .loader").hide();
       }
     };
-    return TaskFolder;
+    return NoteFolder;
   })();
-  TaskItem = (function() {
-    __extends(TaskItem, Backbone.View);
-    function TaskItem() {
+  NoteItem = (function() {
+    __extends(NoteItem, Backbone.View);
+    function NoteItem() {
       this.onToggle = __bind(this.onToggle, this);
       this.toggle = __bind(this.toggle, this);
-      this.editTask = __bind(this.editTask, this);
-      this.deleteTask = __bind(this.deleteTask, this);
-      TaskItem.__super__.constructor.apply(this, arguments);
+      this.editNote = __bind(this.editNote, this);
+      this.deleteNote = __bind(this.deleteNote, this);
+      NoteItem.__super__.constructor.apply(this, arguments);
     }
-    TaskItem.prototype.events = {
+    NoteItem.prototype.events = {
       "change .done": "onToggle",
-      "click .deleteTask": "deleteTask",
-      "dblclick h4": "editTask"
+      "click .deleteNote": "deleteNote",
+      "dblclick h4": "editNote"
     };
-    TaskItem.prototype.initialize = function(options) {
+    NoteItem.prototype.initialize = function(options) {
       this.check = this.el.find(".done");
-      this.id = this.el.attr("data-task-id");
+      this.id = this.el.attr("data-note-id");
       return this.folder = options.folder;
     };
-    TaskItem.prototype.deleteTask = function(e) {
+    NoteItem.prototype.deleteNote = function(e) {
       if (e != null) {
         e.preventDefault();
       }
       this.loading(false);
-      jsRoutes.controllers.Tasks["delete"](this.id).ajax({
+      jsRoutes.controllers.Notes["delete"](this.id).ajax({
         context: this,
         data: {
           name: name
@@ -541,14 +541,14 @@
       });
       return false;
     };
-    TaskItem.prototype.editTask = function(e) {
+    NoteItem.prototype.editNote = function(e) {
       e.preventDefault();
       alert("not implemented yet.");
       return false;
     };
-    TaskItem.prototype.toggle = function(val) {
+    NoteItem.prototype.toggle = function(val) {
       this.loading(true);
-      return jsRoutes.controllers.Tasks.update(this.id).ajax({
+      return jsRoutes.controllers.Notes.update(this.id).ajax({
         context: this,
         data: {
           done: val
@@ -564,7 +564,7 @@
         }
       });
     };
-    TaskItem.prototype.onToggle = function(e) {
+    NoteItem.prototype.onToggle = function(e) {
       var val;
       e.preventDefault();
       val = this.check.is(":checked");
@@ -572,7 +572,7 @@
       this.toggle(val);
       return false;
     };
-    TaskItem.prototype.loading = function(display) {
+    NoteItem.prototype.loading = function(display) {
       if (display) {
         this.el.find(".delete").hide();
         return this.el.find(".loader").show();
@@ -581,7 +581,7 @@
         return this.el.find(".loader").hide();
       }
     };
-    return TaskItem;
+    return NoteItem;
   })();
   $(function() {
     var app, drawer;
